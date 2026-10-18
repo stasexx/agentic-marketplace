@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sdd-engineering",
+  "version": "1.0.0",
+  "description": "Spec-driven engineering: `/sdd-engineering:spec <feature>` researches the codebase and writes a reviewable spec to docs/specs/. Records the active plugin version on every session start.",
+  "author": {
+    "name": "stasexx"
+  },
+  "repository": "https://github.com/stasexx/agentic-marketplace",
+  "keywords": [
+    "sdd",
+    "spec-driven",
+    "workflow",
+    "specs"
+  ],
+  "dependencies": [
+    "research-tools@agentic-marketplace@^1.0.0",
+    "code-agents@agentic-marketplace@^1.0.0"
+  ]
+}

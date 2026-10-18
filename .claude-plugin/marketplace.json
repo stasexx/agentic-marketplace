@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "agentic-marketplace",
+  "owner": {
+    "name": "stasexx",
+    "url": "https://github.com/stasexx"
+  },
+  "metadata": {
+    "description": "Agentic Marketplace \u2014 Claude Code plugins for spec-driven engineering (GoIT AI Agentic Engineering, L08)."
+  },
+  "plugins": [
+    {
+      "name": "research-tools",
+      "source": "./plugins/research-tools",
+      "description": "Read-only research agent that gathers facts from the codebase before any change is planned.",
+      "category": "development"
+    },
+    {
+      "name": "code-agents",
+      "source": "./plugins/code-agents",
+      "description": "Execution agent `implementer`: implements one task from a spec and self-verifies.",
+      "category": "development"
+    },
+    {
+      "name": "sdd-engineering",
+      "source": "./plugins/sdd-engineering",
+      "description": "Spec-driven engineering workflow: /spec writes a reviewable spec from a feature request. Depends on research-tools and code-agents.",
+      "category": "workflow"
+    }
+  ]
+}

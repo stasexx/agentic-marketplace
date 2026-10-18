@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "research-tools",
+  "version": "1.0.0",
+  "description": "Read-only research agent: finds the files, symbols and conventions a change will touch and reports them with file:line evidence.",
+  "author": {
+    "name": "stasexx"
+  },
+  "repository": "https://github.com/stasexx/agentic-marketplace",
+  "keywords": [
+    "research",
+    "read-only",
+    "context"
+  ]
+}

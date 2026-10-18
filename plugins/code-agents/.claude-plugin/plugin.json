@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "code-agents",
+  "version": "1.0.0",
+  "description": "Execution agent `implementer`: implements exactly one task from a spec inside its owned paths and self-verifies with the project's tests.",
+  "author": {
+    "name": "stasexx"
+  },
+  "repository": "https://github.com/stasexx/agentic-marketplace",
+  "keywords": [
+    "implementation",
+    "agents"
+  ]
+}

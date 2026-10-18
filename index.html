@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Marketplace</title>
+<style>
+:root{--bg:#f7f7f8;--card:#fff;--text:#16181d;--muted:#5b6170;--border:#e3e5ea;--accent:#2563eb;--accent-bg:rgba(37,99,235,.08);--ok:#15803d;--warn:#b45309}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0d0f14;--card:#151922;--text:#e6e8ee;--muted:#9aa3b2;--border:#262b36;--accent:#60a5fa;--accent-bg:rgba(96,165,250,.12);--ok:#4ade80;--warn:#fbbf24}}
+:root[data-theme="dark"]{--bg:#0d0f14;--card:#151922;--text:#e6e8ee;--muted:#9aa3b2;--border:#262b36;--accent:#60a5fa;--accent-bg:rgba(96,165,250,.12);--ok:#4ade80;--warn:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:26px;margin:0 0 4px}.sub{color:var(--muted);margin:0 0 20px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:22px}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+.pill{border:1px solid var(--border);border-radius:999px;padding:2px 10px;font-size:12.5px;color:var(--muted);background:var(--card)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.name{font-weight:700;font-size:16px}
+.ver{font-weight:600;color:var(--accent);background:var(--accent-bg);border-radius:6px;padding:0 7px;font-size:12.5px}
+.stable{color:var(--ok);font-size:12px}.cat{margin-left:auto;color:var(--muted);font-size:12px}
+.desc{color:var(--muted);margin:0}.deps{display:flex;flex-wrap:wrap;gap:6px}
+.dep{font-size:12px;border:1px dashed var(--border);border-radius:6px;padding:1px 7px}
+.install{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 8px;overflow-x:auto;white-space:nowrap}
+section{margin-top:28px}h2{font-size:16px;margin:0 0 10px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+td,th{padding:7px 10px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}th{color:var(--muted);font-weight:600}
+.err{color:var(--warn)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Agentic Marketplace</h1>
+  <p class="sub" id="desc">Claude Code plugin catalog.</p>
+  <div class="bar">
+    <span class="pill">add: <code>/plugin marketplace add stasexx/agentic-marketplace</code></span>
+    <span class="pill">channels: <b>latest</b> = <code>main</code>, <b>stable</b> = <code>stable</code></span>
+    <span class="pill" id="count">loading…</span>
+  </div>
+  <div class="grid" id="plugins"></div>
+  <section><h2>Releases (git tags)</h2><table><thead><tr><th>Tag</th><th>Commit</th></tr></thead><tbody id="tags"><tr><td colspan="2">loading…</td></tr></tbody></table></section>
+</main>
+<script>
+// Everything shown here is read live from the repository's own manifests — no hand-maintained list.
+const REPO = 'stasexx/agentic-marketplace';
+const raw = (ref, path) => `https://raw.githubusercontent.com/${REPO}/${ref}/${path}`;
+const getJson = async (url) => { const r = await fetch(url, { cache: 'no-store' }); if (!r.ok) throw new Error(r.status + ' ' + url); return r.json(); };
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+(async () => {
+  const box = document.getElementById('plugins');
+  try {
+    const mp = await getJson('.claude-plugin/marketplace.json');
+    document.getElementById('desc').textContent = mp.metadata?.description ?? '';
+    document.getElementById('count').textContent = `${mp.plugins.length} plugins · marketplace "${mp.name}"`;
+    for (const p of mp.plugins) {
+      const path = p.source.replace(/^\.\//, '') + '/.claude-plugin/plugin.json';
+      const [man, stable] = await Promise.all([getJson(path), getJson(raw('stable', path)).catch(() => null)]);
+      const c = el('article', 'card');
+      const h = el('div', 'head');
+      h.append(el('span', 'name', man.name), el('span', 'ver', 'v' + man.version));
+      if (stable) h.append(el('span', 'stable', 'stable v' + stable.version));
+      h.append(el('span', 'cat', p.category ?? ''));
+      c.append(h, el('p', 'desc', man.description));
+      if (man.dependencies?.length) {
+        const d = el('div', 'deps');
+        for (const dep of man.dependencies) d.append(el('span', 'dep mono', dep));
+        c.append(d);
+      }
+      c.append(el('div', 'install mono', `/plugin install ${man.name}@${mp.name}`));
+      box.append(c);
+    }
+  } catch (e) { box.append(el('p', 'err', 'Could not load the catalog: ' + e.message)); }
+  const tb = document.getElementById('tags');
+  try {
+    const tags = await getJson(`https://api.github.com/repos/${REPO}/tags?per_page=50`);
+    tb.innerHTML = '';
+    for (const t of tags) { const tr = el('tr'); tr.append(el('td', 'mono', t.name), el('td', 'mono', t.commit.sha.slice(0, 7))); tb.append(tr); }
+    if (!tags.length) tb.innerHTML = '<tr><td colspan="2">No tags yet.</td></tr>';
+  } catch (e) { tb.innerHTML = ''; const tr = el('tr'); tr.append(el('td', 'err', 'Could not load tags: ' + e.message)); tb.append(tr); }
+})();
+</script>
+</body>
+</html>
