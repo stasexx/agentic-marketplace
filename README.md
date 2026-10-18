@@ -28,6 +28,8 @@ Project-level setup (commit it so the whole team gets the same plugin) — `.cla
 }
 ```
 
+Pin a project to the **stable** channel from the CLI: `claude plugin marketplace add "stasexx/agentic-marketplace#stable" --scope project`.
+
 ## Channels
 
 | Channel | Git ref | Use |
