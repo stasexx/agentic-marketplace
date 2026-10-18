@@ -2,6 +2,7 @@
 name: spec-writer
 description: Use to turn a feature request into a spec file following the spec-template skill. Writes exactly one Markdown file under docs/specs/ and nothing else.
 tools: Read, Glob, Grep, Write, Skill
+model: haiku
 ---
 
 # Spec writer

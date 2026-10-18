@@ -20,10 +20,15 @@ What exists today, with `path:line` evidence from the codebase (from the researc
 - R1 … — numbered, each one testable.
 
 ## Acceptance criteria
-- [ ] AC1 … — measurable checks; every requirement maps to at least one.
+- [ ] AC1 (R1) Given <state>, when <action>, then <observable result>.
+  Every requirement maps to at least one criterion; each is written as Given / When / Then.
 
 ## Out of scope
 - What this spec deliberately does not cover.
+
+## Risks & rollback
+- Risk: <what can break> — Mitigation: <how we prevent or detect it>.
+- Rollback: <the exact step that returns the system to the previous state> (feature flag, revert, down-migration…).
 
 ## Open questions
 - Anything the human must decide (or "None").
@@ -32,4 +37,6 @@ What exists today, with `path:line` evidence from the codebase (from the researc
 Rules:
 - No requirement without an acceptance criterion; no vague words ("fast", "nice") without a number.
 - Context cites real files only — if the researcher found nothing, say so.
-- Keep it under ~80 lines; it is a contract, not an essay.
+- Every acceptance criterion is Given / When / Then.
+- Risks & rollback lists at least two risks with a mitigation each and one concrete rollback step.
+- Keep it under ~90 lines; it is a contract, not an essay.
